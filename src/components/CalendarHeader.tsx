@@ -1,6 +1,6 @@
 
 import React from "react";
-import { ChevronLeft, ChevronRight, Sun, Snowflake, Flower, Rainbow, Umbrella, Tree, Cloud, Wind } from "lucide-react";
+import { ChevronLeft, ChevronRight, Sun, Snowflake, Flower, Rainbow, Umbrella, PalmTree, Cloud, Wind } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,11 @@ interface CalendarHeaderProps {
   onNextMonth: () => void;
 }
 
-const monthEmojis: { [key: string]: React.FC } = {
+interface MonthIconProps {
+  className?: string;
+}
+
+const monthEmojis: { [key: string]: React.ComponentType<MonthIconProps> } = {
   "January": Snowflake,
   "February": Snowflake,
   "March": Flower,
@@ -20,7 +24,7 @@ const monthEmojis: { [key: string]: React.FC } = {
   "June": Sun,
   "July": Sun,
   "August": Sun,
-  "September": Tree,
+  "September": PalmTree,
   "October": Wind,
   "November": Cloud,
   "December": Snowflake,
