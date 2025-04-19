@@ -1,3 +1,4 @@
+
 import React, { createContext, useState, useContext, ReactNode } from "react";
 import { addDays } from "date-fns";
 
@@ -77,7 +78,7 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       ...eventData,
       id: `e${Date.now()}`,
     };
-    setEvents([...events, newEvent]);
+    setEvents(prevEvents => [...prevEvents, newEvent]);
   };
 
   const addSuggestion = (suggestionData: Omit<EventSuggestion, "id" | "status">) => {
@@ -86,12 +87,13 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       id: `s${Date.now()}`,
       status: "pending",
     };
-    setSuggestions([...suggestions, newSuggestion]);
+    setSuggestions(prevSuggestions => [...prevSuggestions, newSuggestion]);
   };
 
   const approveSuggestion = (id: string) => {
     const suggestion = suggestions.find((s) => s.id === id);
     if (suggestion) {
+      // Add to events when approved
       const newEvent: Event = {
         id: `e${Date.now()}`,
         title: suggestion.title,
@@ -102,8 +104,9 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         content: suggestion.content,
         color: suggestion.color,
       };
-      setEvents([...events, newEvent]);
+      setEvents(prevEvents => [...prevEvents, newEvent]);
       
+      // Update suggestion status
       setSuggestions(
         suggestions.map((s) =>
           s.id === id ? { ...s, status: "approved" as const } : s
