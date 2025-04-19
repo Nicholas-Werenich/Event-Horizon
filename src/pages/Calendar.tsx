@@ -1,7 +1,7 @@
-
 import React, { useState } from "react";
 import { addMonths, subMonths, isSameDay } from "date-fns";
 import { Plus, CalendarClock, LogIn } from "lucide-react";
+import { Link } from "react-router-dom";
 
 import { useEvents, Event } from "@/contexts/EventContext";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,7 @@ import { EventForm } from "@/components/EventForm";
 import { EventDetail } from "@/components/EventDetail";
 import { AdminLogin } from "@/components/AdminLogin";
 import { AdminPortal } from "@/components/AdminPortal";
+import { UpcomingEvents } from "@/components/UpcomingEvents";
 import {
   Dialog,
   DialogContent,
@@ -21,11 +22,15 @@ import {
 export default function Calendar() {
   const { events, isAdmin } = useEvents();
   const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [showEventForm, setShowEventForm] = useState(false);
   const [showEventDetail, setShowEventDetail] = useState(false);
   const [showAdminLogin, setShowAdminLogin] = useState(false);
+
+  const handleEventClick = (event: Event) => {
+    setSelectedEvent(event);
+    setShowEventDetail(true);
+  };
 
   const handlePrevMonth = () => {
     setCurrentMonth(subMonths(currentMonth, 1));
@@ -36,27 +41,19 @@ export default function Calendar() {
   };
 
   const handleSelectDay = (day: Date) => {
-    setSelectedDate(day);
-    
-    // Check if there are events on the selected day
-    const eventsOnDay = events.filter((event) => isSameDay(event.date, day));
-    
-    if (eventsOnDay.length > 0) {
-      setSelectedEvent(eventsOnDay[0]);
-      setShowEventDetail(true);
-    } else {
-      setShowEventForm(true);
-    }
+    setSelectedEvent(null);
+    setShowEventDetail(false);
+    setShowEventForm(true);
   };
 
   return (
     <div className="min-h-screen bg-white">
       <header className="border-b p-4">
         <div className="container mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-2 hover:opacity-80">
             <CalendarClock className="h-6 w-6" />
             <h1 className="text-2xl font-bold">EVENT HORIZON</h1>
-          </div>
+          </Link>
           <div className="flex gap-2">
             <Button 
               variant="outline" 
@@ -81,20 +78,21 @@ export default function Calendar() {
         {isAdmin ? (
           <AdminPortal />
         ) : (
-          <div className="max-w-5xl mx-auto">
-            <CalendarHeader
-              currentMonth={currentMonth}
-              onPrevMonth={handlePrevMonth}
-              onNextMonth={handleNextMonth}
-            />
-            <MonthView
-              currentMonth={currentMonth}
-              events={events}
-              onSelectDay={handleSelectDay}
-            />
-            <p className="text-center mt-4 text-sm text-gray-500">
-              Click on a day to view events or suggest a new one.
-            </p>
+          <div className="flex max-w-[1500px] mx-auto">
+            <div className="flex-1">
+              <CalendarHeader
+                currentMonth={currentMonth}
+                onPrevMonth={() => setCurrentMonth(subMonths(currentMonth, 1))}
+                onNextMonth={() => setCurrentMonth(addMonths(currentMonth, 1))}
+              />
+              <MonthView
+                currentMonth={currentMonth}
+                events={events}
+                onSelectDay={handleSelectDay}
+                onEventClick={handleEventClick}
+              />
+            </div>
+            <UpcomingEvents onEventClick={handleEventClick} />
           </div>
         )}
       </main>
@@ -105,10 +103,7 @@ export default function Calendar() {
           <DialogHeader>
             <DialogTitle>Suggest New Event</DialogTitle>
           </DialogHeader>
-          <EventForm 
-            onSuccess={() => setShowEventForm(false)}
-            selectedDate={selectedDate || undefined}
-          />
+          <EventForm onSuccess={() => setShowEventForm(false)} />
         </DialogContent>
       </Dialog>
 

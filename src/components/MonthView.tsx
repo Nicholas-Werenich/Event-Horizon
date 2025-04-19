@@ -1,4 +1,3 @@
-
 import React from "react";
 import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSameMonth, isToday, isSameDay } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -8,9 +7,10 @@ interface MonthViewProps {
   currentMonth: Date;
   events: Event[];
   onSelectDay: (day: Date) => void;
+  onEventClick: (event: Event) => void;
 }
 
-export function MonthView({ currentMonth, events, onSelectDay }: MonthViewProps) {
+export function MonthView({ currentMonth, events, onSelectDay, onEventClick }: MonthViewProps) {
   const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
   // Create calendar days for the current month view
@@ -39,7 +39,6 @@ export function MonthView({ currentMonth, events, onSelectDay }: MonthViewProps)
     );
     rows.push(weekdayHeader);
 
-    // Generate calendar grid
     while (day <= endDate) {
       for (let i = 0; i < 7; i++) {
         const dayEvents = events.filter((event) => isSameDay(day, event.date));
@@ -50,10 +49,8 @@ export function MonthView({ currentMonth, events, onSelectDay }: MonthViewProps)
             className={cn(
               "min-h-[120px] p-1 border-r border-b last:border-r-0 relative",
               !isSameMonth(day, monthStart) && "bg-gray-50",
-              isToday(day) && "bg-blue-50",
-              "cursor-pointer hover:bg-gray-100"
+              isToday(day) && "bg-blue-50"
             )}
-            onClick={() => onSelectDay(day)}
           >
             <div className={cn(
               "text-sm font-medium p-1",
@@ -65,8 +62,12 @@ export function MonthView({ currentMonth, events, onSelectDay }: MonthViewProps)
               {dayEvents.slice(0, 3).map((event) => (
                 <div
                   key={event.id}
-                  className="text-xs px-2 py-1 mb-1 rounded truncate"
+                  className="text-xs px-2 py-1 mb-1 rounded truncate cursor-pointer hover:opacity-80"
                   style={{ backgroundColor: event.color || "#D3E4FD" }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onEventClick(event);
+                  }}
                 >
                   {event.title}
                 </div>

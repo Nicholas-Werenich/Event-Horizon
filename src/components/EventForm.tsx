@@ -1,4 +1,3 @@
-
 import React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
@@ -35,8 +34,11 @@ const formSchema = z.object({
   date: z.date({
     required_error: "A date is required.",
   }),
-  time: z.string().min(1, {
-    message: "Please select a time.",
+  startTime: z.string().min(1, {
+    message: "Please select a start time.",
+  }),
+  endTime: z.string().min(1, {
+    message: "Please select an end time.",
   }),
   location: z.string().min(2, {
     message: "Location must be at least 2 characters.",
@@ -49,20 +51,16 @@ const formSchema = z.object({
   }),
 });
 
-interface EventFormProps {
-  onSuccess?: () => void;
-  selectedDate?: Date;
-}
-
-export function EventForm({ onSuccess, selectedDate }: EventFormProps) {
+export function EventForm({ onSuccess }: { onSuccess?: () => void }) {
   const { addSuggestion } = useEvents();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
-      date: selectedDate || new Date(),
-      time: "",
+      date: new Date(),
+      startTime: "",
+      endTime: "",
       location: "",
       details: "",
       content: "",
@@ -70,11 +68,12 @@ export function EventForm({ onSuccess, selectedDate }: EventFormProps) {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Ensure all required fields are present before adding suggestion
+    const timeRange = `${values.startTime} - ${values.endTime}`;
+    
     const suggestion = {
       title: values.title,
       date: values.date,
-      time: values.time,
+      time: timeRange,
       location: values.location,
       details: values.details,
       content: values.content,
@@ -146,26 +145,49 @@ export function EventForm({ onSuccess, selectedDate }: EventFormProps) {
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="time"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Time</FormLabel>
-                <FormControl>
-                  <div className="relative">
-                    <Clock className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
-                    <Input
-                      type="time"
-                      className="pl-10"
-                      {...field}
-                    />
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="space-y-4">
+            <FormField
+              control={form.control}
+              name="startTime"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Start Time</FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <Clock className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+                      <Input
+                        type="time"
+                        className="pl-10"
+                        {...field}
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="endTime"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>End Time</FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <Clock className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+                      <Input
+                        type="time"
+                        className="pl-10"
+                        {...field}
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
         </div>
 
         <FormField

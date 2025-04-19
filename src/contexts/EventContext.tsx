@@ -1,8 +1,6 @@
-
 import React, { createContext, useState, useContext, ReactNode } from "react";
 import { addDays } from "date-fns";
 
-// Define event types
 export interface Event {
   id: string;
   title: string;
@@ -32,13 +30,12 @@ interface EventContextType {
 
 const EventContext = createContext<EventContextType | undefined>(undefined);
 
-// Sample events for initial state
 const initialEvents: Event[] = [
   {
     id: "1",
     title: "Team Meeting",
-    date: new Date(2025, 3, 21), // April 21, 2025
-    time: "10:00 AM",
+    date: new Date(2025, 3, 21),
+    time: "10:00 AM - 11:00 AM",
     location: "Conference Room A",
     details: "Weekly team sync",
     content: "Discuss project progress and upcoming deadlines.",
@@ -47,8 +44,8 @@ const initialEvents: Event[] = [
   {
     id: "2",
     title: "Lunch & Learn",
-    date: new Date(2025, 3, 23), // April 23, 2025
-    time: "12:30 PM",
+    date: new Date(2025, 3, 23),
+    time: "12:30 PM - 2:00 PM",
     location: "Cafeteria",
     details: "Tech talk series",
     content: "Introduction to GraphQL and modern API design.",
@@ -56,13 +53,12 @@ const initialEvents: Event[] = [
   },
 ];
 
-// Sample pending suggestions
 const initialSuggestions: EventSuggestion[] = [
   {
     id: "s1",
     title: "Community Workshop",
-    date: new Date(2025, 3, 28), // April 28, 2025
-    time: "3:00 PM",
+    date: new Date(2025, 3, 28),
+    time: "3:00 PM - 5:00 PM",
     location: "Community Center",
     details: "Open to public",
     content: "Learn about sustainable gardening practices for urban environments.",
@@ -96,7 +92,6 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const approveSuggestion = (id: string) => {
     const suggestion = suggestions.find((s) => s.id === id);
     if (suggestion) {
-      // Add to events
       const newEvent: Event = {
         id: `e${Date.now()}`,
         title: suggestion.title,
@@ -109,7 +104,6 @@ export const EventProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       };
       setEvents([...events, newEvent]);
       
-      // Update suggestion status
       setSuggestions(
         suggestions.map((s) =>
           s.id === id ? { ...s, status: "approved" as const } : s
