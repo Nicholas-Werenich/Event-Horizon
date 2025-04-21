@@ -1,6 +1,6 @@
 
 import React from "react";
-import { ChevronLeft, ChevronRight, Sun, Snowflake, Flower, Rainbow, Umbrella, Plant, Cloud, Wind } from "lucide-react";
+import { ChevronLeft, ChevronRight, Sun, Snowflake, Flower, Rainbow, Umbrella, Plane, Cloud, Wind } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -24,7 +24,7 @@ const monthEmojis: { [key: string]: React.ComponentType<MonthIconProps> } = {
   "June": Sun,
   "July": Sun,
   "August": Sun,
-  "September": PalmTree,
+  "September": Plane,
   "October": Wind,
   "November": Cloud,
   "December": Snowflake,

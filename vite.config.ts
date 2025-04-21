@@ -5,7 +5,7 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: '/event-horizon/',
+  base: mode === 'development' ? '/' : '/event-horizon/',
   server: {
     host: "::",
     port: 8080,
