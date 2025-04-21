@@ -1,6 +1,6 @@
 
 import React from "react";
-import { ChevronLeft, ChevronRight, Sun, Snowflake, Flower, Rainbow, Umbrella, PalmTree, Cloud, Wind } from "lucide-react";
+import { ChevronLeft, ChevronRight, Sun, Snowflake, Flower, Rainbow, Umbrella, Plant, Cloud, Wind } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
